@@ -70,55 +70,53 @@ export const createTransporter = () => {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const sendOtpEmail = async (email, otp) => {
-  try {
-    const response = await resend.emails.send({
-      from: "onboarding@resend.dev",
-      to: email,
-      subject: "Your OTP Code",
-      html: `
-        <div style="font-family: Arial;">
-          <h2>Email Verification</h2>
-          <p>Your OTP code is:</p>
-          <h1>${otp}</h1>
-          <p>This OTP will expire in 5 minutes.</p>
-        </div>
-      `
-    });
 
-    console.log("Email sent:", response);
-  } catch (error) {
-    console.error("Email error:", error);
-  }
-};
+
 export const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 
+// export const sendOtp = async (req, res) => {
+//   try {
+//     const { email } = req.body;
+
+//     const otp = generateOTP();
+//     console.log("OTP:", otp);
+
+//     await sendOtpEmail(email, otp);
+
+//     return res.send({
+//       success: true,
+//       message: "OTP sent successfully"
+//     });
+
+//   } catch (error) {
+//     console.error(error);
+
+//     return res.status(500).send({
+//       success: false,
+//       message: "Failed to send OTP"
+//     });
+//   }
+// };
+
+
 export const sendOTPEmail = async (email, otp) => {
   try {
-    const transporter = createTransporter();
-
-    await transporter.verify(function(error, success) {
-  if (error) {
-    console.log("SMTP connection error:", error);
-  } else {
-    console.log("SMTP server is ready to take messages");
-  }
-});
     
-    const mailOptions = {
-      from: `"Womenica" <${process.env.EMAIL_USER}>`,
+    const info = await resend.emails.send({
+      // from: `"Womenica" <${process.env.EMAIL_USER}>`,
+      from: `"Divine Shop" <onboarding@resend.dev>`,
       to: email,
-      subject: '✅ Verification Code - Womenica',
+      subject: '✅ Verification Code - Divine Shop',
       html: `
         <!DOCTYPE html>
         <html lang="en">
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Verify Your Email - Womenica</title>
+          <title>Verify Your Email - Divine Shop</title>
           <style>
             @media only screen and (max-width: 600px) {
               .container {
@@ -185,7 +183,7 @@ export const sendOTPEmail = async (email, otp) => {
                   Verify Your Email Address
                 </h2>
                 <p style="color: #64748b; margin: 0; font-size: 16px; line-height: 1.6;">
-                  Welcome to Womenica! Use the code below to complete your registration.
+                  Welcome to Divine Shop! Use the code below to complete your registration.
                 </p>
               </div>
 
@@ -254,7 +252,7 @@ export const sendOTPEmail = async (email, otp) => {
                 <p style="color: #475569; margin: 0; font-size: 14px;">
                   Need help? Contact us at 
                   <a href="mailto:codermat@gmail.com" style="color: #3b82f6; text-decoration: none; font-weight: 500;">
-                    codermat@gmail.com
+                    raviprajapat80031@gmail.com
                   </a>
                 </p>
               </div>
@@ -265,11 +263,16 @@ export const sendOTPEmail = async (email, otp) => {
         </body>
         </html>
       `
-    };
+    });
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('✅ OTP email sent: ' + info.messageId);
-    return { success: true, messageId: info.messageId };
+     if (info.error) {
+      console.error("Email error:", info.error);
+      return { success: false };
+    }
+   
+    // console.log("Full response:", JSON.stringify(info, null, 2));
+    console.log('✅ OTP email sent: ' + info.data?.id);
+    return { success: true, messageId: info.data?.id };
   } catch (error) {
     console.error('❌ Error sending OTP email:', error);
     return { success: false, error: error.message };

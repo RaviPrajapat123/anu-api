@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { sendOTPEmail,generateOTP, sendResetPasswordEmail, sendOtpEmail } from '../utils/email.js';
+import { sendOTPEmail,generateOTP, sendResetPasswordEmail } from '../utils/email.js';
 import { ObjectId } from '@fastify/mongodb';
 
 
@@ -31,15 +31,16 @@ export const register = async (request, reply) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate and send OTP
-    // const otp = generateOTP();
-    // const emailResult = await sendOTPEmail(email, otp);
+    const otp = generateOTP();
+    const emailResult = await sendOTPEmail(email, otp);
     
     // // Log OTP for development/testing
-    // console.log(`🔑 OTP for ${email}: ${otp}`);
+    console.log(`🔑 OTP for ${email}: ${otp}`);
+    console.log('Email sending result:', emailResult);
     
-    // if (!emailResult.success) {
-    //   console.error('Failed to send OTP email:', emailResult.error);
-    // }
+    if (!emailResult.success) {
+      console.error('Failed to send OTP email:', emailResult.error);
+    }
 
     // Create user
     const user = {
@@ -48,10 +49,10 @@ export const register = async (request, reply) => {
       password: hashedPassword,
       phone,
       role: 'user',
-      // otp: otp,
+      otp: otp,
       status:"Active",
-      // otpExpiresAt: new Date(Date.now() + 10 * 60 * 1000),
-      // isVerified: false,
+      otpExpiresAt: new Date(Date.now() + 10 * 60 * 1000),
+      isVerified: false,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -67,7 +68,7 @@ export const register = async (request, reply) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        // emailSent: emailResult.success,
+        emailSent: emailResult.success,
         status:user.status
       }
     });
@@ -540,26 +541,3 @@ export const changePassword = async (req, reply) => {
 
 
 
-export const sendOtp = async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    const otp = generateOTP();
-    console.log("OTP:", otp);
-
-    await sendOtpEmail(email, otp);
-
-    return res.send({
-      success: true,
-      message: "OTP sent successfully"
-    });
-
-  } catch (error) {
-    console.error(error);
-
-    return res.status(500).send({
-      success: false,
-      message: "Failed to send OTP"
-    });
-  }
-};

@@ -2,7 +2,7 @@
 // import { register,login,forgotPassword,verifyResetOTP,resetPassword,verifyOTP,changePassword} from "../controllers/auth.controller.js";
 import { validateSchema } from "../validators/validation.middleware.js";
 // import { registerSchema,changePasswordSchema } from "../validators/auth.validator.js";
-import { register, sendOtp } from "../controllers/auth.controller.js";
+import { register } from "../controllers/auth.controller.js";
 import { registerSchema } from "../validators/auth.validator.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import { generateOTP, sendOTPEmail } from "../utils/email.js";
@@ -20,7 +20,7 @@ export default async function authRoutes(fastify, options) {
     // });
 
 
-    fastify.post("/send-otp", sendOtp);
+    // fastify.post("/send-otp", sendOtp);
     // fastify.post('/auth/login', login);
     // fastify.post('/auth/forgot-password', forgotPassword);
     // fastify.post("/auth/verify-reset-otp",verifyResetOTP)
