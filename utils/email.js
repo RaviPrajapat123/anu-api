@@ -34,9 +34,9 @@ export const createTransporter = () => {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_APP_PASSWORD
         },
-        tls: {
-            rejectUnauthorized: false
-        }
+        // tls: {
+        //     rejectUnauthorized: false
+        // }
     })
 // }
     // else {
@@ -59,6 +59,14 @@ export const generateOTP = () => {
 export const sendOTPEmail = async (email, otp) => {
   try {
     const transporter = createTransporter();
+
+    await transporter.verify(function(error, success) {
+  if (error) {
+    console.log("SMTP connection error:", error);
+  } else {
+    console.log("SMTP server is ready to take messages");
+  }
+});
     
     const mailOptions = {
       from: `"Womenica" <${process.env.EMAIL_USER}>`,
