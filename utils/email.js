@@ -12,47 +12,60 @@ const emailFooterTemplate=fs.readFileSync(path.join(_dirname,'../templates/foote
 // Replace placeholder with current year
 const emailFooter = emailFooterTemplate.replace('{{CURRENT_YEAR}}', new Date().getFullYear());
 
-export const createTransporter = () => {
-    // Check if email credentials are configured
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
-        throw new Error('Email configuration missing. Please set EMAIL_USER and EMAIL_APP_PASSWORD in .env file');
-    }
+// export const createTransporter = () => {
+//     // Check if email credentials are configured
+//     if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
+//         throw new Error('Email configuration missing. Please set EMAIL_USER and EMAIL_APP_PASSWORD in .env file');
+//     }
 
-    // if(process.env.EMAIL_HOST && process.env.EMAIL_PORT)
-    // {
-    // console.log('Using custom SMTP:', {
-    //   host: process.env.EMAIL_HOST,
-    //   port: process.env.EMAIL_PORT,
-    //   user: process.env.EMAIL_USER
-    // });
+//     // if(process.env.EMAIL_HOST && process.env.EMAIL_PORT)
+//     // {
+//     // console.log('Using custom SMTP:', {
+//     //   host: process.env.EMAIL_HOST,
+//     //   port: process.env.EMAIL_PORT,
+//     //   user: process.env.EMAIL_USER
+//     // });
 
-    return nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        // port: parseInt(process.env.EMAIL_PORT) || 465,
-        // port:587,
-        // secure: false,
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_APP_PASSWORD
-        },
-        // tls: {
-        //     rejectUnauthorized: false
-        // }
-    })
+
+    
+    
+//     // return nodemailer.createTransport({
+//     //     host: process.env.EMAIL_HOST,
+//     //     // port: parseInt(process.env.EMAIL_PORT) || 465,
+//     //     // port:587,
+//     //     // secure: false,
+//     //     service: 'gmail',
+//     //     auth: {
+//     //         user: process.env.EMAIL_USER,
+//     //         pass: process.env.EMAIL_APP_PASSWORD
+//     //     },
+//     //     // tls: {
+//     //     //     rejectUnauthorized: false
+//     //     // }
+//     // })
+// // }
+//     // else {
+//     //     console.log("Using Gmail service");
+//     //     return nodemailer.createTransport({
+//     //         service: 'gmail',
+//     //         auth: {
+//     //             user: process.env.EMAIL_USER,
+//     //             pass: process.env.EMAIL_APP_PASSWORD
+//     //         }
+//     //     });
+//     // }
 // }
-    // else {
-    //     console.log("Using Gmail service");
-    //     return nodemailer.createTransport({
-    //         service: 'gmail',
-    //         auth: {
-    //             user: process.env.EMAIL_USER,
-    //             pass: process.env.EMAIL_APP_PASSWORD
-    //         }
-    //     });
-    // }
-}
 
+
+export const createTransporter = () => {
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_APP_PASSWORD
+    }
+  });
+};
 export const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
