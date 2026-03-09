@@ -18,13 +18,13 @@ export const createTransporter = () => {
         throw new Error('Email configuration missing. Please set EMAIL_USER and EMAIL_APP_PASSWORD in .env file');
     }
 
-    if(process.env.EMAIL_HOST && process.env.EMAIL_PORT)
-    {
-    console.log('Using custom SMTP:', {
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      user: process.env.EMAIL_USER
-    });
+    // if(process.env.EMAIL_HOST && process.env.EMAIL_PORT)
+    // {
+    // console.log('Using custom SMTP:', {
+    //   host: process.env.EMAIL_HOST,
+    //   port: process.env.EMAIL_PORT,
+    //   user: process.env.EMAIL_USER
+    // });
 
     return nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
@@ -38,17 +38,17 @@ export const createTransporter = () => {
             rejectUnauthorized: false
         }
     })
-}
-    else {
-        console.log("Using Gmail service");
-        return nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_APP_PASSWORD
-            }
-        });
-    }
+// }
+    // else {
+    //     console.log("Using Gmail service");
+    //     return nodemailer.createTransport({
+    //         service: 'gmail',
+    //         auth: {
+    //             user: process.env.EMAIL_USER,
+    //             pass: process.env.EMAIL_APP_PASSWORD
+    //         }
+    //     });
+    // }
 }
 
 export const generateOTP = () => {
