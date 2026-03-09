@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { sendOTPEmail,generateOTP, sendResetPasswordEmail } from '../utils/email.js';
+import { sendOTPEmail,generateOTP, sendResetPasswordEmail, sendOtpEmail } from '../utils/email.js';
 import { ObjectId } from '@fastify/mongodb';
 
 
@@ -533,6 +533,33 @@ export const changePassword = async (req, reply) => {
       success: false,
       message: "Internal Server Error",
       error: err.message,
+    });
+  }
+};
+
+
+
+
+export const sendOtp = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const otp = generateOTP();
+    console.log("OTP:", otp);
+
+    await sendOtpEmail(email, otp);
+
+    return res.send({
+      success: true,
+      message: "OTP sent successfully"
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).send({
+      success: false,
+      message: "Failed to send OTP"
     });
   }
 };

@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import fs from 'fs'
 import path from "path"
 import { fileURLToPath } from 'url';
+import { Resend } from 'resend';
 
 const _filename=fileURLToPath(import.meta.url);
 const _dirname= path.dirname(_filename)
@@ -65,6 +66,30 @@ export const createTransporter = () => {
       pass: process.env.EMAIL_APP_PASSWORD
     }
   });
+};
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export const sendOtpEmail = async (email, otp) => {
+  try {
+    const response = await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: email,
+      subject: "Your OTP Code",
+      html: `
+        <div style="font-family: Arial;">
+          <h2>Email Verification</h2>
+          <p>Your OTP code is:</p>
+          <h1>${otp}</h1>
+          <p>This OTP will expire in 5 minutes.</p>
+        </div>
+      `
+    });
+
+    console.log("Email sent:", response);
+  } catch (error) {
+    console.error("Email error:", error);
+  }
 };
 export const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
